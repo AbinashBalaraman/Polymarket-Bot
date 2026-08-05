@@ -1,1 +1,41 @@
-"""\nBase strategy interface \u2014 all strategies implement this.\n"""\n\nfrom abc import ABC, abstractmethod\nfrom dataclasses import dataclass\nfrom typing import Optional\nfrom market_scanner import Market\n\n\n@dataclass\nclass Signal:\n    """A trading signal from a strategy."""\n    market: Market\n    action: str\n    token_id: str\n    price: float\n    size_usd: float\n    edge: float\n    confidence: float\n    reason: str\n    strategy: str\n\n\nclass BaseStrategy(ABC):\n    """Abstract base for all trading strategies."""\n\n    @property\n    @abstractmethod\n    def name(self) -> str:\n        ...\n\n    @abstractmethod\n    def evaluate(self, market: Market) -> Optional[Signal]:\n        """Evaluate a market and return a Signal if there's an opportunity."""\n        ...\n\n    @abstractmethod\n    def should_cancel(self, order_age_seconds: float, current_edge: float) -> bool:\n        """Check if an existing order should be cancelled (edge decay)."""\n        ...\n
+"""
+Base strategy interface — all strategies implement this.
+"""
+
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from typing import Optional
+from market_scanner import Market
+
+
+@dataclass
+class Signal:
+    """A trading signal from a strategy."""
+    market: Market
+    action: str
+    token_id: str
+    price: float
+    size_usd: float
+    edge: float
+    confidence: float
+    reason: str
+    strategy: str
+
+
+class BaseStrategy(ABC):
+    """Abstract base for all trading strategies."""
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        ...
+
+    @abstractmethod
+    def evaluate(self, market: Market) -> Optional[Signal]:
+        """Evaluate a market and return a Signal if there's an opportunity."""
+        ...
+
+    @abstractmethod
+    def should_cancel(self, order_age_seconds: float, current_edge: float) -> bool:
+        """Check if an existing order should be cancelled (edge decay)."""
+        ...
